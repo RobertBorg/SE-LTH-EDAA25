@@ -6,12 +6,11 @@
 int main ()
 {
 
-	int c;
-	int temp = 0;
+	register int c;
 	bool isIsDigit = false;
 	bool wasIsDigit = false;
 	int stack[100];
-	int* stackPointer = stack;
+	register int* stackPointer = stack;
 	int* stackEnd = stackPointer + sizeof(int) * 100;
 	while ((c=getchar()) != EOF){
 	    if (isIsDigit = isdigit(c)) {
@@ -22,7 +21,7 @@ int main ()
 	    	*stackPointer += c - '0';
 	    } else {
 	    }
-	    int current = *stackPointer;
+	    register int current = *stackPointer;
 	    switch (c) {
 	    	case '+':
 	    		--stackPointer;
@@ -47,8 +46,6 @@ int main ()
 	    	case '\n':
 	    		--stackPointer;
 	    		printf("%d\n", current );
-	    		break;
-	    	default:
 	    		break;
 	    }
 		wasIsDigit = isIsDigit;
