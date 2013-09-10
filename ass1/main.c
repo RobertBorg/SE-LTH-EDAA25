@@ -20,33 +20,33 @@ int main ()
 	    	*stackPointer *= 10;
 	    	*stackPointer += c - '0';
 	    } else {
-	    }
-	    register int current = *stackPointer;
-	    switch (c) {
-	    	case '+':
-	    		--stackPointer;
-	    		//printf("%d + %d\n", *stackPointer, current);
-	    		*stackPointer += current;
-	    		break;
-	    	case '-':
-	    		--stackPointer;
-	    		//printf("%d - %d\n", *stackPointer, current);
-	    		*stackPointer -= current;
-	    		break;
-	    	case '*':
-	    		--stackPointer;
-	    		//printf("%d * %d\n", *stackPointer, current);
-	    		*stackPointer *= current;
-	    		break;
-	    	case '/':
-	    		--stackPointer;
-	    		//printf("%d / %d\n", *stackPointer, current);
-	    		*stackPointer += current;
-	    		break;
-	    	case '\n':
-	    		--stackPointer;
-	    		printf("%d\n", current );
-	    		break;
+		    register int current = *stackPointer;
+		    switch (c) {
+		    	case '+':
+		    		--stackPointer;
+		    		//printf("%d + %d\n", *stackPointer, current);
+		    		*stackPointer += current;
+		    		break;
+		    	case '-':
+		    		--stackPointer;
+		    		//printf("%d - %d\n", *stackPointer, current);
+		    		*stackPointer -= current;
+		    		break;
+		    	case '*':
+		    		--stackPointer;
+		    		//printf("%d * %d\n", *stackPointer, current);
+		    		*stackPointer *= current;
+		    		break;
+		    	case '/':
+		    		--stackPointer;
+		    		//printf("%d / %d\n", *stackPointer, current);
+		    		*stackPointer += current;
+		    		break;
+		    	case '\n':
+		    		--stackPointer;
+		    		printf("%d\n", current );
+		    		break;
+		    }
 	    }
 		wasIsDigit = isIsDigit;
 	}
