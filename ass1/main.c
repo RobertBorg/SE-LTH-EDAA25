@@ -66,7 +66,7 @@ int main ()
 		    			error("division by zero");
 		    		}
 		    		//printf("%d / %d\n", *stackPointer, current);
-		    		*stackPointer += current;
+		    		*stackPointer /= current;
 		    		break;
 		    	case '\n':
 		    		pop(&stackPointer);
