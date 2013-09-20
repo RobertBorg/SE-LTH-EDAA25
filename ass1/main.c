@@ -1,3 +1,4 @@
+//870906-3997 Robert Borg
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -11,66 +12,62 @@ void error(char* errMsg)
 }
 
 int stack[STACKSPACE];
-int* stackEnd = stack + STACKSPACE;
+int* stack_end = stack + STACKSPACE;
 
-void push(int** stackPointer)
+void push(int** stack_pointer)
 {
-        ++*stackPointer;
-        if(*stackPointer > stackEnd) {
+        if(*stack_pointer >= stack_end) {
                 error("Out of stack space");
         }
+        ++*stack_pointer;
 }
 
-void pop(int** stackPointer)
+void pop(int** stack_pointer)
 {
-        --*stackPointer;
-        if(*stackPointer < stack) {
+        if(*stack_pointer <= stack) {
                 error("syntax error");
         }       
+        --*stack_pointer;
 }
 
 int main ()
 {
         register int c;
-        bool isIsDigit = false;
-        bool wasIsDigit = false;
-        int* stackPointer = stack;
+        bool is_is_digit = false;
+        bool was_is_digit = false;
+        int* stack_pointer = stack;
         while ((c=getchar()) != EOF) {
-                if (isIsDigit = isdigit(c)) {
-                        if (!wasIsDigit) {
-                                push(&stackPointer);
-                                *stackPointer = 0;
+                if (is_is_digit = isdigit(c)) {
+                        if (!was_is_digit) {
+                                push(&stack_pointer);
+                                *stack_pointer = 0;
                         }
-                        *stackPointer *= 10;
-                        *stackPointer += c - '0';
+                        *stack_pointer *= 10;
+                        *stack_pointer += c - '0';
                 } else {
-                        register int current = *stackPointer;
+                        register int current = *stack_pointer;
                         switch (c) {
                         case '+':
-                                pop(&stackPointer);
-                                //printf("%d + %d\n", *stackPointer, current);
-                                *stackPointer += current;
+                                pop(&stack_pointer);
+                                *stack_pointer += current;
                                 break;
                         case '-':
-                                pop(&stackPointer);
-                                //printf("%d - %d\n", *stackPointer, current);
-                                *stackPointer -= current;
+                                pop(&stack_pointer);
+                                *stack_pointer -= current;
                                 break;
                         case '*':
-                                pop(&stackPointer);
-                                //printf("%d * %d\n", *stackPointer, current);
-                                *stackPointer *= current;
+                                pop(&stack_pointer);
+                                *stack_pointer *= current;
                                 break;
                         case '/':
-                                pop(&stackPointer);
+                                pop(&stack_pointer);
                                 if(current == 0) {
                                         error("division by zero");
                                 }
-                                //printf("%d / %d\n", *stackPointer, current);
-                                *stackPointer /= current;
+                                *stack_pointer /= current;
                                 break;
                         case '\n':
-                                pop(&stackPointer);
+                                pop(&stack_pointer);
                                 printf("%d\n", current );
                                 break;
                         case ' ':
@@ -80,7 +77,7 @@ int main ()
                                 break; 
                         }
                 }
-                wasIsDigit = isIsDigit;
+                was_is_digit = is_is_digit;
         }
         return 0;
 }
