@@ -11,10 +11,8 @@ void error(char* errMsg)
         exit(1);
 }
 
-int stack[STACKSPACE];
-int* stack_end = stack + STACKSPACE;
 
-void push(int** stack_pointer)
+void push(int** stack_pointer, int* stack_end)
 {
         if(*stack_pointer >= stack_end) {
                 error("Out of stack space");
@@ -22,7 +20,7 @@ void push(int** stack_pointer)
         ++*stack_pointer;
 }
 
-void pop(int** stack_pointer)
+void pop(int** stack_pointer, int* stack)
 {
         if(*stack_pointer <= stack) {
                 error("syntax error");
@@ -32,14 +30,16 @@ void pop(int** stack_pointer)
 
 int main ()
 {
+        int stack[STACKSPACE];
+        int* stack_end = stack + STACKSPACE;
         register int c;
-        bool is_is_digit = false;
-        bool was_is_digit = false;
+        bool is_digit = false;
+        bool trail_is_digit = false;
         int* stack_pointer = stack;
         while ((c=getchar()) != EOF) {
-                if (is_is_digit = isdigit(c)) {
-                        if (!was_is_digit) {
-                                push(&stack_pointer);
+                if (is_digit = isdigit(c)) {
+                        if (!trail_is_digit) {
+                                push(&stack_pointer, stack_end);
                                 *stack_pointer = 0;
                         }
                         *stack_pointer *= 10;
@@ -48,26 +48,26 @@ int main ()
                         register int current = *stack_pointer;
                         switch (c) {
                         case '+':
-                                pop(&stack_pointer);
+                                pop(&stack_pointer, stack);
                                 *stack_pointer += current;
                                 break;
                         case '-':
-                                pop(&stack_pointer);
+                                pop(&stack_pointer, stack);
                                 *stack_pointer -= current;
                                 break;
                         case '*':
-                                pop(&stack_pointer);
+                                pop(&stack_pointer, stack);
                                 *stack_pointer *= current;
                                 break;
                         case '/':
-                                pop(&stack_pointer);
+                                pop(&stack_pointer, stack);
                                 if(current == 0) {
                                         error("division by zero");
                                 }
                                 *stack_pointer /= current;
                                 break;
                         case '\n':
-                                pop(&stack_pointer);
+                                pop(&stack_pointer, stack);
                                 printf("%d\n", current );
                                 break;
                         case ' ':
@@ -77,7 +77,7 @@ int main ()
                                 break; 
                         }
                 }
-                was_is_digit = is_is_digit;
+                trail_is_digit = is_digit;
         }
         return 0;
 }
