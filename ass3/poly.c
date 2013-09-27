@@ -1,3 +1,4 @@
+//Robert Borg 870906-3997
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -6,19 +7,25 @@
 
 #define MAX_TERMS (10)
 
-struct term {
+void error(const char* errMsg)
+{
+	printf("%s",errMsg);
+	exit(1);
+}
+
+struct term_t {
 	signed long long coefficient;
 	signed long long exponent;
 };
 
 struct poly_t {
 	int count;
-	struct term* terms[MAX_TERMS];
+	term_t* terms[MAX_TERMS];
 };
 
 poly_t* mul(poly_t* lhs, poly_t* rhs)
 {
-	struct poly_t* poly = malloc(sizeof(struct poly_t));
+	poly_t* poly = malloc(sizeof(poly_t));
 	if(poly == NULL)
 		error("out of memory");
 	for(int i = 0; i < lhs->count; ++i) {
@@ -26,7 +33,7 @@ poly_t* mul(poly_t* lhs, poly_t* rhs)
 			signed long long tmp = lhs->terms[i]->coefficient * rhs->terms[j]->coefficient;
 			if(tmp == 0)
 				continue;
-			struct term* term = malloc(sizeof(struct term));
+			term_t* term = malloc(sizeof(term_t));
 			if(term == NULL)
 				error("not enough memory allocating a term");
 			poly->terms[poly->count++] = term;
@@ -48,13 +55,13 @@ void free_poly(poly_t* poly)
 
 poly_t* new_poly_from_string(const char* in_string)
 {
-	poly_t* poly = malloc(sizeof(struct poly_t));
+	poly_t* poly = malloc(sizeof(poly_t));
 	if(poly == 0)
 		error("unable to allocate memory for poly");
 	while(*in_string != 0) {
-		struct term tmp;
+		term_t tmp;
 		memset(&tmp, 0, sizeof(tmp));
-		size_t n = 0;
+		int n = 0;
 		while(*in_string == ' ')
 			++in_string;
 		int multiplier = 1;
@@ -84,12 +91,12 @@ poly_t* new_poly_from_string(const char* in_string)
 			} else
 				tmp.exponent = 1;
 		}
-		struct term* term = malloc(sizeof(struct term));
+		term_t* term = malloc(sizeof(term_t));
 		if(term == 0){
 			free_poly(poly);
 			error("unable to allocate memory for term");
 		}
-		memcpy(term, &tmp, sizeof(struct term));
+		memcpy(term, &tmp, sizeof(term_t));
 		if(poly->count == MAX_TERMS){
 			free(term);
 			error("MAX_TERMS reached, unable to add more while parsing string");
@@ -107,9 +114,10 @@ void print_poly(poly_t* poly)
 		else 
 			if(i != 0)
 				printf("+ ");
-		if(poly->terms[i]->coefficient != 0)
-			printf("%lld", poly->terms[i]->coefficient < 0 ? poly->terms[i]->coefficient * -1 : poly->terms[i]->coefficient);
-		else
+		if(poly->terms[i]->coefficient != 0) {
+			if(poly->terms[i]->coefficient != 1)
+				printf("%lld", poly->terms[i]->coefficient < 0 ? poly->terms[i]->coefficient * -1 : poly->terms[i]->coefficient);
+		} else
 			continue;
 		if(poly->terms[i]->exponent != 0) {
 			printf("X");		
