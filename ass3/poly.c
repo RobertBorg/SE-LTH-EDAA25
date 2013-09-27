@@ -115,7 +115,7 @@ void print_poly(poly_t* poly)
 			if(i != 0)
 				printf("+ ");
 		if(poly->terms[i]->coefficient != 0) {
-			if(poly->terms[i]->coefficient != 1)
+			if(poly->terms[i]->coefficient != 1 || poly->terms[i]->exponent == 0)
 				printf("%lld", poly->terms[i]->coefficient < 0 ? poly->terms[i]->coefficient * -1 : poly->terms[i]->coefficient);
 		} else
 			continue;
