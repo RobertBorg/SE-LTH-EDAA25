@@ -23,19 +23,32 @@ struct poly_t {
 	term_t* terms[MAX_TERMS];
 };
 
+void free_poly(poly_t* poly)
+{
+	for( int i = 0; i < poly->count; ++i) {
+		free(poly->terms[i]);
+		poly->terms[i] = 0;
+	}
+	poly->count = 0;
+	free(poly);
+}
+
 poly_t* mul(poly_t* lhs, poly_t* rhs)
 {
 	poly_t* poly = malloc(sizeof(poly_t));
 	if(poly == NULL)
 		error("out of memory");
+	poly->count = 0;
 	for(int i = 0; i < lhs->count; ++i) {
 		for(int j = 0; j < rhs->count; ++j) {
 			signed long long tmp = lhs->terms[i]->coefficient * rhs->terms[j]->coefficient;
 			if(tmp == 0)
 				continue;
 			term_t* term = malloc(sizeof(term_t));
-			if(term == NULL)
+			if(term == NULL){
+				free_poly(poly);	
 				error("not enough memory allocating a term");
+			}
 			poly->terms[poly->count++] = term;
 			term->coefficient = tmp;
 			term->exponent = lhs->terms[i]->exponent + rhs->terms[j]->exponent;
@@ -44,20 +57,13 @@ poly_t* mul(poly_t* lhs, poly_t* rhs)
 	return poly;
 }
 
-void free_poly(poly_t* poly)
-{
-	for( int i = 0; i < poly->count; ++i) {
-		free(poly->terms[i]);
-		poly->terms[i] = 0;
-	}
-	poly->count = 0;
-}
 
 poly_t* new_poly_from_string(const char* in_string)
 {
 	poly_t* poly = malloc(sizeof(poly_t));
-	if(poly == 0)
+	if(poly == NULL)
 		error("unable to allocate memory for poly");
+	poly->count = 0;
 	while(*in_string != 0) {
 		term_t tmp;
 		memset(&tmp, 0, sizeof(tmp));
@@ -90,9 +96,11 @@ poly_t* new_poly_from_string(const char* in_string)
 				in_string += n;
 			} else
 				tmp.exponent = 1;
+		} else {
+			tmp.exponent = 0;
 		}
 		term_t* term = malloc(sizeof(term_t));
-		if(term == 0){
+		if(term == NULL){
 			free_poly(poly);
 			error("unable to allocate memory for term");
 		}
