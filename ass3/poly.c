@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include "poly.h"
 
 #define MAX_TERMS (10)
@@ -41,17 +42,28 @@ poly_t* mul(poly_t* lhs, poly_t* rhs)
 	poly->count = 0;
 	for(int i = 0; i < lhs->count; ++i) {
 		for(int j = 0; j < rhs->count; ++j) {
-			signed long long tmp = lhs->terms[i]->coefficient * rhs->terms[j]->coefficient;
-			if(tmp == 0)
+			signed long long coefficient = lhs->terms[i]->coefficient * rhs->terms[j]->coefficient;
+			if(coefficient == 0)
 				continue;
-			term_t* term = malloc(sizeof(term_t));
-			if(term == NULL){
-				free_poly(poly);	
-				error("not enough memory allocating a term");
+			signed long long exponent = lhs->terms[i]->exponent + rhs->terms[j]->exponent;
+			bool match_found = false;
+			for(int j = 0; j < poly->count; ++j) {
+				if(poly->terms[j]->exponent == exponent){
+					match_found = true;
+					poly->terms[j]->coefficient += coefficient;
+					break;
+				}
 			}
-			poly->terms[poly->count++] = term;
-			term->coefficient = tmp;
-			term->exponent = lhs->terms[i]->exponent + rhs->terms[j]->exponent;
+			if(!match_found) {
+				term_t* term = malloc(sizeof(term_t));
+				if(term == NULL){
+					free_poly(poly);	
+					error("not enough memory allocating a term");
+				}
+				poly->terms[poly->count++] = term;
+				term->coefficient = coefficient;
+				term->exponent = exponent;
+			}
 		}
 	}
 	return poly;
